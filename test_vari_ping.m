@@ -89,9 +89,12 @@ xlabel('Bytes sent');
 ylabel('Std value');
 
 
-% --------- Vengono calcolati i due throughtput ---------
+% ---------  Calcolo due throughtput ---------
 throughput_bottleneck = 2/m; % Risultato in Byte/ms
 links = 15;  % MODIFICA IL NUMERO DI LINK
 throughput = links/m;
+
+fprintf('Il throughput è: %d', throughput);
+fprintf('Il throughput del bottleneck è: %d', throughput_bottleneck);
 
 
