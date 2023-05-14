@@ -2,7 +2,7 @@ clc;
 clear;
 % Definizione del nome o dell'indirizzo IP del server da testare
 %server_name = 'paris.testdebit.info';
-server_name = 'aix-marseille.testdebit.info';
+server_name = 'nyc.speedtest.clouvider.net';
 
 counter = 1;
 
@@ -27,7 +27,7 @@ while counter <= 50
         end
     else
         % Il comando ha restituito un errore, la connessione ha fallito
-        fprintf('Connessione al server %s fallita con n = %d (non è stata ricevuta risposta)\n', server_name, counter);
+        fprintf('Connessione al server %s fallita con n = %d\n', server_name, counter);
     end
     counter = counter + 1;
 end
