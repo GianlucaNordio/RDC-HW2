@@ -91,7 +91,7 @@ ylabel('Std value');
 
 % --------- Vengono calcolati i due throughtput ---------
 throughput_bottleneck = 2/m; % Risultato in Byte/ms
-links = 1;  %TODO modify the number of link or calculate it
+links = 15;  % MODIFICA IL NUMERO DI LINK
 throughput = links/m;
 
 
