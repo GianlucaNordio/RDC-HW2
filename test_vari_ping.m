@@ -3,8 +3,8 @@ clear;
 
 % --------- Parametri ---------
 host = 'aix-marseille.testdebit.info';
-K_param = 100;
-jump = 100; %TODO METTI COME VALORE 34
+K_param = 10;
+jump = 17; %TODO METTI COME VALORE 34
 L_param = 10; 
 
 
@@ -30,7 +30,7 @@ for j = 1:row_number
         time = erase(erase(time, 'ms'), 'durata=');
         disp(time);
         converted_time = str2double(time);
-        results(j ,2:6) = converted_time;
+        results(j ,2:end) = converted_time;
     else
         fprintf("errore");
     end
@@ -89,12 +89,38 @@ xlabel('Bytes sent');
 ylabel('Std value');
 
 
+
+% ---------  Determinazione numero link ---------
+links = -1;
+counter = 1;
+while counter <= 50
+link_command = sprintf('ping -n 3 -l 10 -i %d %s', counter, host);
+[state, output] = system(link_command);
+    if state == 0
+        % Il comando è stato eseguito correttamente, analizziamo l'output
+        match = regexp(output, 'TTL=', 'match');
+        if ~isempty(match)
+            % Abbiamo trovato il valore TTL, la connessione ha avuto successo
+            links = counter;
+            break
+        end
+    end
+    counter = counter + 1;
+end
+
+if(links == -1)
+    links = input('Impossibile determinare il numero di link in modo automatico!\nInserisci il numero di link: ');
+end
+
+fprintf('\n\nIl numero di link utilizzati è: %d\n\n', links);
+
+
 % ---------  Calcolo due throughtput ---------
 throughput_bottleneck = 2/m; % Risultato in Byte/ms
-links = 15;  % MODIFICA IL NUMERO DI LINK
 throughput = links/m;
 
-fprintf('Il throughput è: %d', throughput);
-fprintf('Il throughput del bottleneck è: %d', throughput_bottleneck);
+
+fprintf('Il throughput è: %d\n', throughput);
+fprintf('Il throughput del bottleneck è: %d\n', throughput_bottleneck);
 
 
