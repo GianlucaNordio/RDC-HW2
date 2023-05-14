@@ -1,18 +1,18 @@
 clc;
 clear;
 
-% --------- Parametri ---------
+
 host = 'aix-marseille.testdebit.info';
 K_param = 100;
 jump = 100; %TODO METTI COME VALORE 34
 L_param = 10; 
 
 
-% Initialize an empty table with variable names 
-% La dimensione dei pacchetti non arriva a 1472 perché ci sono i 28 Byte di
-% header
+% Initialize an empty table with variable names
 row_number = int32((1472-L_param)/jump);
-
+% Inizialmente veniva inserito un +1 per far arrivare L_param a 1472.
+% Ma a causa dei 28 Byte di header questa cosa non è corretta.
+%row_number = row_number + 1;
 results = -1 * ones(row_number, 1 + K_param);
 for j = 1:row_number
     command = sprintf('ping -n %d -l %d %s', K_param, L_param, host);
@@ -34,11 +34,12 @@ for j = 1:row_number
     end
 end
 
-% --------- Pendenza e intercetta della retta ---------
 min_col = min(results(:,2:end), [], 2);
 avg_col = mean(results(:,2:end), 2);
 max_col = max(results(:,2:end), [], 2);
+
 % Si passa 0 come parametro indicando che si usa la sample std.
+% Per utilizzare la population std settare il parametro a ???
 std_col = std(results(:,2:end), 0, 2);
 
 column_names = {'bytes', 'min', 'avg', 'max', 'std'};
