@@ -8,11 +8,13 @@ jump = 100; %TODO METTI COME VALORE 34
 L_param = 10; 
 
 
-% Initialize an empty table with variable names 
+% --------- Tabella con campionamenti ---------
+
 % La dimensione dei pacchetti non arriva a 1472 perché ci sono i 28 Byte di
 % header
 row_number = int32((1472-L_param)/jump);
 
+% Inizializza una tabella con gli elementi vuoti
 results = -1 * ones(row_number, 1 + K_param);
 for j = 1:row_number
     command = sprintf('ping -n %d -l %d %s', K_param, L_param, host);
@@ -22,7 +24,7 @@ for j = 1:row_number
     results(j, 1) = L_param;
     L_param = L_param + jump;
     if status == 0
-        % MODIFICA DURATA SULLA BASE DEL TUO COMPUTER
+        % MODIFICA LA PAROLA 'durata' SULLA BASE DEL TUO COMPUTER
         % (testando con il 'ping www.google.com')
         time = regexp(pingResult, 'durata=\d+ms', 'match');
         time = erase(erase(time, 'ms'), 'durata=');
