@@ -21,11 +21,11 @@ for j = 1:row_number
     disp(command);
     % Esegue il ping e salva il risultato in una stringa
     [status, pingResult] = system(command);
+    disp(pingResult); % TODO: rimuovere questo disp, ma prima capire perché ogni tanto ci sono problemi
     results(j, 1) = L_param;
     L_param = L_param + jump;
     if status == 0
         % MODIFICA LA PAROLA 'durata' SULLA BASE DEL TUO COMPUTER
-        % (testando con il 'ping www.google.com')
         time = regexp(pingResult, 'durata=\d+ms', 'match');
         time = erase(erase(time, 'ms'), 'durata=');
         disp(time);
@@ -40,7 +40,7 @@ end
 min_col = min(results(:,2:end), [], 2);
 avg_col = mean(results(:,2:end), 2);
 max_col = max(results(:,2:end), [], 2);
-% Si passa 0 come parametro indicando che si usa la sample std.
+% Si passa 0 come parametro indicando che si usa la sample std
 std_col = std(results(:,2:end), 0, 2);
 
 column_names = {'bytes', 'min', 'avg', 'max', 'std'};
