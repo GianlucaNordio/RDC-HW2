@@ -2,7 +2,7 @@ clc;
 clear;
 % Definizione del nome o dell'indirizzo IP del server da testare
 %server_name = 'paris.testdebit.info';
-server_name = 'nyc.speedtest.clouvider.net';
+server_name = 'aix-marseille.testdebit.info';
 
 counter = 1;
 
