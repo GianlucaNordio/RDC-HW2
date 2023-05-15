@@ -19,8 +19,8 @@ results = -1 * ones(row_number, 1 + K_param);
 for j = 1:row_number
     command = sprintf('ping -n %d -l %d %s', K_param, L_param, host);
     disp(command);
-    answered_correctly = true;
-    while answered_correctly
+    answered_correctly = false;
+    while answered_correctly == false
         % Esegue il ping e salva il risultato in una stringa
         [status, pingResult] = system(command);
         disp(pingResult); % TODO: rimuovere questo disp, ma prima capire perché ogni tanto ci sono problemi
