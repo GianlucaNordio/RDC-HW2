@@ -3,8 +3,8 @@ clear;
 
 % --------- Parametri ---------
 host = 'aix-marseille.testdebit.info';
-K_param = 100;
-jump = 17; %TODO METTI COME VALORE 34
+K_param = 50;
+jump = 17*2; %TODO METTI COME VALORE 34
 L_param = 10; 
 
 
@@ -129,7 +129,7 @@ throughput_bottleneck = 2/m; % Risultato in Byte/ms
 throughput = links/m;
 
 
-fprintf('Il throughput è: %d\n', throughput);
-fprintf('Il throughput del bottleneck è: %d\n', throughput_bottleneck);
+fprintf('Il throughput è: %.2f byte/ms = %.2f Mbit/s\n', throughput, throughput*8/1000);
+fprintf('Il throughput del bottleneck è: %.2f Byte/ms = %.2f Mbit/s\n', throughput_bottleneck, throughput_bottleneck*8/1000);
 
 
