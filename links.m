@@ -6,7 +6,7 @@ server_name = 'aix-marseille.testdebit.info';
 
 counter = 1;
 
-while counter <= 50
+while counter <= 200
     % Definizione del comando ping da eseguire
     command = sprintf('ping -n 5 -l 10 -i %d %s', counter, server_name);
     
