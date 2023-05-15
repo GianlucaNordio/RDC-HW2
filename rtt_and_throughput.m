@@ -3,7 +3,7 @@ clear;
 
 % --------- Parametri ---------
 host = 'aix-marseille.testdebit.info';
-K_param = 100;
+K_param = 5;
 jump = 17; %TODO METTI COME VALORE 34
 L_param = 10; 
 
@@ -20,12 +20,12 @@ for j = 1:row_number
     command = sprintf('ping -n %d -l %d %s', K_param, L_param, host);
     disp(command);
     answered_correctly = false;
-    while answered_correctly == false
+    while ~answered_correctly
         % Esegue il ping e salva il risultato in una stringa
         [status, pingResult] = system(command);
         disp(pingResult); % TODO: rimuovere questo disp, ma prima capire perché ogni tanto ci sono problemi
         if status == 0
-            if(~isempty(regexp(pingResult, 'Richiesta scaduta', 'match')))
+            if(isempty(regexp(pingResult, 'Richiesta scaduta', 'match')))
                 results(j, 1) = L_param;
                 L_param = L_param + jump;
                 % MODIFICA LA PAROLA 'durata' SULLA BASE DEL TUO COMPUTER
@@ -40,6 +40,7 @@ for j = 1:row_number
             end
         else
             fprintf("errore");
+            answered_correctly = false;
         end
     end
 end
