@@ -20,28 +20,26 @@ for j = 1:row_number
     command = sprintf('ping -n %d -l %d %s', K_param, L_param, host);
     disp(command);
     answered_correctly = true;
-    while answered_correctly
+    while 
         % Esegue il ping e salva il risultato in una stringa
         [status, pingResult] = system(command);
         disp(pingResult); % TODO: rimuovere questo disp, ma prima capire perché ogni tanto ci sono problemi
+        results(j, 1) = L_param;
+        L_param = L_param + jump;
         if status == 0
             if(~isempty(regexp(pingResult, 'Richiesta scaduta', 'match')))
-                results(j, 1) = L_param;
-                L_param = L_param + jump;
                 % MODIFICA LA PAROLA 'durata' SULLA BASE DEL TUO COMPUTER
                 time = regexp(pingResult, 'durata=\d+ms', 'match'); 
                 time = erase(erase(time, 'ms'), 'durata=');
                 disp(time);
                 converted_time = str2double(time);
                 results(j ,2:end) = converted_time;
-                answered_correctly = true;
             else
-                answered_correctly = false;
+                
             end
         else
             fprintf("errore");
         end
-    end
 end
 
 % --------- Pendenza e intercetta della retta ---------
