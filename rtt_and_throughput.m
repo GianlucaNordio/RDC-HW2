@@ -3,7 +3,7 @@ clear;
 
 % --------- Parametri ---------
 host = 'aix-marseille.testdebit.info';
-K_param = 5;
+K_param = 100;
 jump = 17; %TODO METTI COME VALORE 34
 L_param = 10; 
 
