@@ -3,8 +3,8 @@ clear;
 
 % --------- Parametri ---------
 host = 'aix-marseille.testdebit.info';
-K_param = 50;
-jump = 17; %TODO METTI COME VALORE 34
+K_param = 1;   %50;
+jump = 17*20; %TODO METTI COME VALORE 34
 L_param = 10; 
 
 
@@ -14,51 +14,36 @@ L_param = 10;
 % header
 row_number = int32((1472-L_param)/jump);
 
-% Inizializza una tabella con gli elementi vuoti
-results = -1 * ones(row_number, 1 + K_param);
+bytes_col = zeros(1, row_number);
+std_col = zeros(1, row_number);
+max_col = zeros(1, row_number);
+min_col = zeros(1, row_number);
+avg_col = zeros(1, row_number);
+
+
 for j = 1:row_number
-    command = sprintf('ping -n %d -l %d %s', K_param, L_param, host);
+    % TODO AGGIUNGI L
+    command = sprintf('psping -w 0 -n %d -l %d %s', K_param, L_param, host);
     disp(command);
-    answered_correctly = false;
-    while ~answered_correctly
-        % Esegue il ping e salva il risultato in una stringa
-        [status, pingResult] = system(command);
-        disp(pingResult); % TODO: rimuovere questo disp, ma prima capire perché ogni tanto ci sono problemi
-        if status == 0
-            if(isempty(regexp(pingResult, 'Richiesta scaduta', 'match')))
-                results(j, 1) = L_param;
-                L_param = L_param + jump;
-                % MODIFICA LA PAROLA 'durata' SULLA BASE DEL TUO COMPUTER
-                time = regexp(pingResult, 'durata=\d+ms', 'match'); 
-                time = erase(erase(time, 'ms'), 'durata=');
-                disp(time);
-                converted_time = str2double(time);
-                results(j ,2:end) = converted_time;
-                answered_correctly = true;
-            else
-                answered_correctly = false;
-            end
-        else
-            fprintf("errore");
-            answered_correctly = false;
-        end
-    end
+    % Esegue il ping e salva il risultato in una stringa
+    [status, pingResult] = system(command);
+    disp(pingResult); 
+    pattern = '\d+\.\d+ms';
+    time = regexp(pingResult, pattern, 'match');
+    time = erase(time, 'ms');
+    converted_time = str2double(time);
+    disp(converted_time);
+    min_col(j) = converted_time(end-2);
+    max_col(j) = converted_time(end-1);
+    avg_col(j) = converted_time(end);
+    std_col(j) = std(converted_time(:,1:(end-3)), 0, 2);
+    bytes_col(j) = L_param;
+    L_param = L_param + jump;
 end
 
-% --------- Pendenza e intercetta della retta ---------
-min_col = min(results(:,2:end), [], 2);
-avg_col = mean(results(:,2:end), 2);
-max_col = max(results(:,2:end), [], 2);
-% Si passa 0 come parametro indicando che si usa la sample std
-std_col = std(results(:,2:end), 0, 2);
-
-column_names = {'bytes', 'min', 'avg', 'max', 'std'};
-stats = array2table([results(:,1), min_col, avg_col, max_col, std_col], 'VariableNames', column_names);
-disp(stats);
-
 
 % --------- Pendenza e intercetta della retta ---------
-coeff = polyfit(stats.bytes, stats.min, 1);
+coeff = polyfit(bytes_col, min_col, 1);
 m = coeff(1); % pendenza
 q = coeff(2); % intercetta
 fprintf('\n\nLa funzione ottenuta tramite polyfit è: %d x + %d\n\n', m, q);
@@ -69,31 +54,31 @@ figure;
 
 % Grafico min
 subplot(2, 2, 1);
-scatter(stats.bytes, stats.min); 
+scatter(bytes_col, min_col); 
 xlabel('Bytes sent');
 ylabel('Min value');
 
 % La retta ottenuta da polyfit viene aggiunta al grafico di min
 hold on
-x_line = linspace(min(stats.bytes), max(stats.bytes), 100);
+x_line = linspace(min(bytes_col), max(bytes_col), 100);
 y_line = polyval(coeff, x_line);
 plot(x_line, y_line, 'r');
 
 % Grafico max
 subplot(2, 2, 2);
-scatter(stats.bytes, stats.max); 
+scatter(bytes_col, max_col); 
 xlabel('Bytes sent');
 ylabel('Max value');
 
 % Grafico avg
 subplot(2, 2, 3);
-scatter(stats.bytes, stats.avg); 
+scatter(bytes_col, avg_col); 
 xlabel('Bytes sent');
 ylabel('Avg value');
 
 % Grafico std
 subplot(2, 2, 4);
-scatter(stats.bytes, stats.std); 
+scatter(bytes_col, std_col); 
 xlabel('Bytes sent');
 ylabel('Std value');
 
@@ -131,5 +116,11 @@ throughput = links/m;
 
 fprintf('Il throughput è: %.2f byte/ms = %.2f Mbit/s\n', throughput, throughput*8/1000);
 fprintf('Il throughput del bottleneck è: %.2f Byte/ms = %.2f Mbit/s\n', throughput_bottleneck, throughput_bottleneck*8/1000);
+%%
+% ---------  Writing all data into a csv file ---------
+column_names = {'bytes', 'min', 'avg', 'max', 'std'};
+result_matrix = array2table([bytes_col, min_col, avg_col, max_col, std_col], 'VariableNames', column_names);
+writematrix(result_matrix,'psping_throughput_results.csv');
+
 
 
