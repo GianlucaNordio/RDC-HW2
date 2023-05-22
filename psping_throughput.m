@@ -14,11 +14,11 @@ L_param = 10;
 % header
 row_number = int32((1472-L_param)/jump);
 
-bytes_col = zeros(1, row_number);
-std_col = zeros(1, row_number);
-max_col = zeros(1, row_number);
-min_col = zeros(1, row_number);
-avg_col = zeros(1, row_number);
+bytes_col = zeros(row_number, 1);
+std_col = zeros(row_number, 1);
+max_col = zeros(row_number, 1);
+min_col = zeros(row_number, 1);
+avg_col = zeros(row_number, 1);
 
 
 for j = 1:row_number
@@ -116,11 +116,11 @@ throughput = links/m;
 
 fprintf('Il throughput è: %.2f byte/ms = %.2f Mbit/s\n', throughput, throughput*8/1000);
 fprintf('Il throughput del bottleneck è: %.2f Byte/ms = %.2f Mbit/s\n', throughput_bottleneck, throughput_bottleneck*8/1000);
-%%
-% ---------  Writing all data into a csv file ---------
+
+% ---------  Writing all data into a xls file ---------
 column_names = {'bytes', 'min', 'avg', 'max', 'std'};
 result_matrix = array2table([bytes_col, min_col, avg_col, max_col, std_col], 'VariableNames', column_names);
-writematrix(result_matrix,'psping_throughput_results.csv');
+writetable(result_matrix,'psping_throughput_results.xls','WriteVariableNames', true);
 
 
 
