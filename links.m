@@ -1,7 +1,6 @@
 clc;
 clear;
 % Definizione del nome o dell'indirizzo IP del server da testare
-%server_name = 'paris.testdebit.info';
 server_name = 'aix-marseille.testdebit.info';
 
 counter = 1;
@@ -18,11 +17,11 @@ while counter <= 200
         % Il comando è stato eseguito correttamente, analizziamo l'output
         match = regexp(output, 'TTL=', 'match');
         if ~isempty(match)
-            % Abbiamo trovato il valore TTL, la connessione ha avuto successo
+            % E' stato trovato il valore TTL, la connessione ha avuto successo
             fprintf('Connessione al server %s riuscita con n = %d\n', server_name, counter);
             break
         else
-            % Non abbiamo trovato il valore TTL, la connessione ha fallito
+            % Non è stato trovato il valore TTL, la connessione ha fallito
             fprintf('Connessione al server %s fallita con n = %d\n', server_name, counter);
         end
     else
@@ -35,7 +34,7 @@ end
 fprintf('\n\nIl TTL necessario calcolato per effettuare la connessione è %d\n\n', counter);
 
 
-% Il risultato del comando "tracert" viene mostrato
+% Risultato del comando "tracert" viene mostrato
 fprintf('Si effettua ora il controllo tramite il comando tracert:\n')
 command = sprintf('tracert %s', server_name);
 [status, output] = system(command);
